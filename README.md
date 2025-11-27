@@ -1,3 +1,31 @@
+Using Tim Laings maintained version as this is where authentication is now working (Apple keep changing the authentication) - but with some additional changes since the image sync portion doesn't work.
+
+# Save your current work if needed
+git branch backup-my-work
+
+# Remove your current origin
+git remote remove origin
+
+# Add the fork as origin
+git remote add origin https://github.com/timlaing/pyicloud.git
+
+# Fetch everything
+git fetch origin
+
+# Reset to their main branch
+git reset --hard origin/main
+
+# If you want to keep it as your repo, change the remote back
+git remote set-url origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
+
+# Force push
+git push -f origin main
+
+
+
+
+
+
 # pyiCloud
 
 ![Build Status](https://github.com/timlaing/pyicloud/actions/workflows/tests.yml/badge.svg)
