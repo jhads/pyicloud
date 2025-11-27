@@ -49,7 +49,7 @@ class AlbumTypeEnum(IntEnum):
 class SmartAlbumEnum(str, Enum):
     """Smart albums names."""
 
-    ALL_PHOTOS = "Library"
+    ALL_PHOTOS = "All Photos"
     BURSTS = "Bursts"
     FAVORITES = "Favorites"
     HIDDEN = "Hidden"
@@ -804,10 +804,10 @@ class BasePhotoAlbum:
     def photos(self) -> Generator["PhotoAsset", None, None]:
         """Returns the album photos."""
         self._len = None
-        if self._direction == DirectionEnum.DESCENDING:
-            offset: int = len(self) - 1
-        else:
-            offset = 0
+        # if self._direction == DirectionEnum.DESCENDING:
+        #     offset: int = len(self) - 1
+        # else:
+        offset = 0
 
         photos_ids: set[str] = set()
 
@@ -822,14 +822,14 @@ class BasePhotoAlbum:
                 yield photo
             if num_results < self.page_size:
                 _LOGGER.debug("Less than page size returned: %d", num_results)
-            if (
-                num_results < self.page_size // 2
-            ):  # If less than half the page size is returned, we assume we're done
-                break
-            if self._direction == DirectionEnum.DESCENDING:
-                offset = offset - num_results
-            else:
-                offset = offset + num_results
+            # if (
+            #     num_results < self.page_size // 2
+            # ):  # If less than half the page size is returned, we assume we're done
+            #     break
+            # if self._direction == DirectionEnum.DESCENDING:
+            # offset = offset - num_results
+            # else:
+            offset = offset + num_results
 
     @property
     @abstractmethod
