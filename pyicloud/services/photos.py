@@ -715,7 +715,7 @@ class BasePhotoAlbum:
         library: BasePhotoLibrary,
         name: str,
         list_type: ListTypeEnum,
-        page_size: int = 100,
+        page_size: int = 50,
         direction: DirectionEnum = DirectionEnum.ASCENDING,
     ) -> None:
         self._name: str = name
