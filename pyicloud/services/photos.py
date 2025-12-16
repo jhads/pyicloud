@@ -72,7 +72,7 @@ class DirectionEnum(str, Enum):
 class ListTypeEnum(str, Enum):
     """List type names."""
 
-    DEFAULT = "CPLAssetAndMasterByAssetDateWithoutHiddenOrDeleted"
+    DEFAULT = "CPLAssetAndMasterByAddedDate"
     DELETED = "CPLAssetAndMasterDeletedByExpungedDate"
     HIDDEN = "CPLAssetAndMasterHiddenByAssetDate"
     SMART_ALBUM = "CPLAssetAndMasterInSmartAlbumByAssetDate"
@@ -84,7 +84,7 @@ class ListTypeEnum(str, Enum):
 class ObjectTypeEnum(str, Enum):
     """Object type names."""
 
-    ALL = "CPLAssetByAssetDateWithoutHiddenOrDeleted"
+    ALL = "CPLAssetByAddedDate"
     BURST = "CPLAssetBurstStackAssetByAssetDate"
     DELETED = "CPLAssetDeletedByExpungedDate"
     FAVORITE = "CPLAssetInSmartAlbumByAssetDate:Favorite"
