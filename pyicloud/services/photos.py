@@ -762,6 +762,8 @@ class BasePhotoAlbum:
         asset_records, master_records = self._library.parse_asset_response(
             json_response
         )
+        if direction == DirectionEnum.DESCENDING:
+            master_records.reverse()
         for master_record in master_records:
             record_name: str = master_record["recordName"]
             asset_record = asset_records.get(record_name)
