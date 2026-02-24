@@ -1481,7 +1481,11 @@ class PhotoAsset:
 
     PHOTO_VERSION_LOOKUP: dict[str, str] = {
         "original": "resOriginal",
+        "full": "resJPEGFull",
+        "large": "resJPEGLarge",
         "medium": "resJPEGMed",
+        "sidecar": "resSidecar",
+        "original_alt": "resOriginalAlt",
         "thumb": "resJPEGThumb",
         "original_video": "resOriginalVidCompl",
         "medium_video": "resVidMed",
@@ -1489,6 +1493,8 @@ class PhotoAsset:
     }
 
     VIDEO_VERSION_LOOKUP: dict[str, str] = {
+        "full": "resVidFull",
+        "original_compl": "resOriginalVidCompl",
         "original": "resOriginal",
         "medium": "resVidMed",
         "thumb": "resVidSmall",
@@ -1580,9 +1586,44 @@ class PhotoAsset:
             else:
                 typed_version_lookup = self.PHOTO_VERSION_LOOKUP
 
-            for key, prefix in typed_version_lookup.items():
-                if f"{prefix}Res" in self._master_record["fields"]:
-                    self._versions[key] = self._get_photo_version(prefix)
+            # Prefer using adjusted (i.e. user edited) versions of photos if available.
+            for record in (self._master_record, self._asset_record):
+                for key, prefix in typed_version_lookup.items():
+                    if f"{prefix}Res" in record["fields"]:
+                        fields = record["fields"]
+                        version = {"filename": self.filename}
+
+                        width_entry = fields.get("%sWidth" % prefix)
+                        if width_entry:
+                            version["width"] = width_entry["value"]
+                        else:
+                            version["width"] = None
+
+                        height_entry = fields.get("%sHeight" % prefix)
+                        if height_entry:
+                            version["height"] = height_entry["value"]
+                        else:
+                            version["height"] = None
+
+                        size_entry = fields.get("%sRes" % prefix)
+                        if size_entry:
+                            version["size"] = size_entry["value"]["size"]
+                            version["url"] = size_entry["value"]["downloadURL"]
+                        else:
+                            version["size"] = None
+                            version["url"] = None
+
+                        type_entry = fields.get("%sFileType" % prefix)
+                        if type_entry:
+                            version["type"] = type_entry["value"]
+                        else:
+                            version["type"] = None
+
+                        self._versions[key] = version
+
+            # for key, prefix in typed_version_lookup.items():
+            #     if f"{prefix}Res" in self._master_record["fields"]:
+            #         self._versions[key] = self._get_photo_version(prefix)
 
         return self._versions
 
