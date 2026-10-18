@@ -827,17 +827,23 @@ class BasePhotoAlbum:
 
         while True:
             num_results = 0
+            num_new = 0
             for photo in self._get_photos_at(offset, self._direction, self.page_size):
                 num_results += 1
                 if photo.id in photos_ids:
                     _LOGGER.debug("Duplicate photo found: %s, skipping", photo.id)
                     continue
+                num_new += 1
                 photos_ids.add(photo.id)
                 yield photo
-            if num_results == 0:
-                # An empty page means we've reached the end of the album; without
-                # this the same offset is re-requested forever
-                _LOGGER.debug("No results returned at offset %d, stopping", offset)
+            _LOGGER.info(
+                "Offset %d: %d results, %d new", offset, num_results, num_new
+            )
+            if num_new == 0:
+                # Past the end of the album iCloud returns either an empty page or
+                # the last page again, so a page with nothing new means we're done;
+                # without this the same records are re-requested forever
+                _LOGGER.info("No new photos at offset %d, stopping", offset)
                 break
             if num_results < self.page_size:
                 _LOGGER.debug("Less than page size returned: %d", num_results)
