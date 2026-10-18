@@ -822,6 +822,11 @@ class BasePhotoAlbum:
                     continue
                 photos_ids.add(photo.id)
                 yield photo
+            if num_results == 0:
+                # An empty page means we've reached the end of the album; without
+                # this the same offset is re-requested forever
+                _LOGGER.debug("No results returned at offset %d, stopping", offset)
+                break
             if num_results < self.page_size:
                 _LOGGER.debug("Less than page size returned: %d", num_results)
             # if (
