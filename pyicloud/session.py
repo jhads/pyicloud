@@ -33,6 +33,11 @@ if TYPE_CHECKING:
     from pyicloud.base import PyiCloudService
 
 
+# (connect, read) seconds; requests waits forever without one, so a request
+# that iCloud never answers would otherwise hang the caller indefinitely
+DEFAULT_TIMEOUT: tuple[float, float] = (30, 300)
+
+
 class PyiCloudSession(requests.Session):
     """iCloud session."""
 
@@ -144,6 +149,8 @@ class PyiCloudSession(requests.Session):
         cert=None,
         json=None,
     ) -> Response:
+        if timeout is None:
+            timeout = DEFAULT_TIMEOUT
         return self._request(
             method,
             url,
