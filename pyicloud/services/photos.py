@@ -745,12 +745,6 @@ class BasePhotoAlbum:
         self, index: int, direction: DirectionEnum, page_size: int
     ) -> Generator["PhotoAsset", None, None]:
         offset: int = max(0, index)
-        _LOGGER.info(
-            "Fetching photos for album %s at offset %d (page_size=%d)",
-            self.name,
-            offset,
-            page_size,
-        )
 
         response: Response = self.service.session.post(
             url=self._get_url(),
@@ -767,12 +761,6 @@ class BasePhotoAlbum:
         master_records: list[dict[str, Any]]
         asset_records, master_records = self._library.parse_asset_response(
             json_response
-        )
-        _LOGGER.info(
-            "Got %d master / %d asset records at offset %d",
-            len(master_records),
-            len(asset_records),
-            offset,
         )
         if direction == DirectionEnum.DESCENDING:
             master_records.reverse()

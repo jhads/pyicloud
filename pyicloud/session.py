@@ -2,7 +2,6 @@
 
 import logging
 import os
-import time
 from json import JSONDecodeError, dump, load
 from os import path
 from re import match
@@ -178,41 +177,17 @@ class PyiCloudSession(requests.Session):
         **kwargs,
     ) -> Response:
         """Request method."""
-        # query strings can carry tokens, so only log scheme/host/path
-        log_url: str = url.split("?", 1)[0]
-        self.logger.info(
-            "-> %s %s (timeout=%s, stream=%s)",
+        self.logger.debug(
+            "%s %s",
             method,
-            log_url,
-            kwargs.get("timeout"),
-            kwargs.get("stream"),
+            url,
         )
-        started: float = time.monotonic()
 
         try:
-            try:
-                response: Response = super().request(
-                    method=method,
-                    url=url,
-                    **kwargs,
-                )
-            except requests.exceptions.RequestException as err:
-                self.logger.warning(
-                    "<- %s %s failed after %.1fs: %r",
-                    method,
-                    log_url,
-                    time.monotonic() - started,
-                    err,
-                )
-                raise
-
-            self.logger.info(
-                "<- %s %s %s in %.1fs (%s bytes)",
-                method,
-                log_url,
-                response.status_code,
-                time.monotonic() - started,
-                response.headers.get("Content-Length", "?"),
+            response: Response = super().request(
+                method=method,
+                url=url,
+                **kwargs,
             )
 
             self._update_session_data(response)
